@@ -89,9 +89,17 @@ class Model_api_offers extends MY_Model {
 
 	public function getofferdetails($id)
 	{
-		
+
+		$this->db->select('products.*');
+		$this->db->from('offers');
+		$this->db->where('offer_id',$id);
+		$this->db->join('products','products.product_id=offers.pro_id');
+		$query=$this->db->get();
+		$data=$query->result();
+		return $data;
 	}
 
 }
 
 /* End of file Model_offers.php */
+/* Location: ./application/models/Model_offers.php */
