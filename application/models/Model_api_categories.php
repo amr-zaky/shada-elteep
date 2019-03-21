@@ -86,6 +86,30 @@ class Model_api_categories extends MY_Model {
 		return $query->result();
 	}
 
+	public function getallcategries($category_id)
+	{
+		$this->db->select('products.*');
+		$this->db->from('categories');
+		$this->db->join('products','products.cat_id=categories.category_id');
+		$this->db->where('products.cat_id',$category_id);
+		 $this->db->where('products.status',1);
+		$query=$this->db->get();
+		$data=$query->result();
+		return $data;
+	}
+
+
+	public function getprodacts($id)
+	{
+		$this->db->select('*');
+		$this->db->from('products');
+		$this->db->where('products.cat_id',$id);
+		
+		$query=$this->db->get();
+		$data=$query->result();
+		return $data;
+	}
+
 }
 
 /* End of file Model_categories.php */

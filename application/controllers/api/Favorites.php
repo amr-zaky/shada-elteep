@@ -88,7 +88,7 @@ class Favorites extends API
 	 *     HTTP/1.1 403 Not Acceptable
 	 *
 	 */
-	public function detail_get()
+	/*public function detail_get()
 	{
 		$this->is_allowed('api_favorites_detail');
 
@@ -112,9 +112,37 @@ class Favorites extends API
 				'message' 	=> 'Favorites not found'
 			], API::HTTP_NOT_ACCEPTABLE);
 		}
-	}
+	}*/
 
-	
+	public function detail_get()
+	{
+		$this->is_allowed('api_favorites_detail');
+
+		$this->requiredInput(['cust_id']);
+
+
+		$id = $this->get('cust_id');
+
+		$data['favorites'] = $this->model_api_favorites->getallfavorites($id);
+		
+
+		if ($data['favorites']) {
+			
+			$this->response([
+				'status' 	=> true,
+				'message' 	=> 'Detail Favorites',
+				'data'	 	=> $data
+			], API::HTTP_OK);
+		} else {
+			$this->response([
+				'status' 	=> true,
+				'message' 	=> 'Favorites not found'
+			], API::HTTP_NOT_ACCEPTABLE);
+		}
+
+
+
+	}
 	/**
 	 * @api {post} /favorites/add Add Favorites.
 	 * @apiVersion 0.1.0

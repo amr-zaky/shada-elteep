@@ -63,6 +63,25 @@ class Shopping_cart extends API
 		], API::HTTP_OK);
 	}
 
+
+
+	public function getallcard_post()
+	{
+		$this->is_allowed('api_shopping_cart_all');
+		$this->form_validation->set_rules('cust_id', 'Cust Id', 'trim|required|max_length[11]');
+
+     $cust_id=$this->input->post('cust_id');
+
+     	$data['shopping_cart'] = $this->model_api_shopping_cart->getallcardd($cust_id);
+					
+		$this->response([
+			'status' 	=> true,
+			'message' 	=> 'Data Shopping cart',
+			'data'	 	=> $data
+			
+		], API::HTTP_OK);
+
+	}
 	
 	/**
 	 * @api {get} /shopping_cart/detail Detail Shopping cart.
@@ -188,6 +207,8 @@ class Shopping_cart extends API
 	 * @apiHeader {String} X-Token Shopping carts unique token.
 	 * @apiPermission Shopping cart Cant be Accessed permission name : api_shopping_cart_update
 	 *
+	 * @apiParam {String} Cust_id Mandatory cust_id of Shopping carts. Input Cust Id Max Length : 11. 
+	 * @apiParam {String} Pro_id Mandatory pro_id of Shopping carts. Input Pro Id Max Length : 11. 
 	 * @apiParam {String} Cart_count Mandatory cart_count of Shopping carts. Input Cart Count Max Length : 11. 
 	 * @apiParam {Integer} cart_id Mandatory cart_id of Shopping Cart.
 	 *
@@ -208,11 +229,13 @@ class Shopping_cart extends API
 		$this->is_allowed('api_shopping_cart_update');
 
 		
+		
 		$this->form_validation->set_rules('cart_count', 'Cart Count', 'trim|required|max_length[11]');
 		
 		if ($this->form_validation->run()) {
 
 			$save_data = [
+				
 				'cart_count' => $this->input->post('cart_count'),
 			];
 			

@@ -96,10 +96,13 @@ class Categories extends API
 
 		$id = $this->get('category_id');
 
-		$select_field = ['category_id', 'category_name'];
-		$data['categories'] = $this->model_api_categories->find($id, $select_field);
+		/*$select_field = ['category_id', 'category_name'];
+		$data['categories'] = $this->model_api_categories->find($id, $select_field);*/
 
-		if ($data['categories']) {
+
+		$data['products'] = $this->model_api_categories->getprodacts($id);
+
+		if ($data['products']) {
 			
 			$this->response([
 				'status' 	=> true,
@@ -115,6 +118,26 @@ class Categories extends API
 	}
 
 	
+
+	public function menucategories_get()
+	{
+		$this->is_allowed('api_categories_detail');
+
+		$data['categories']['عطور'] = $this->model_api_categories->getallcategries(1);
+		$data['categories']['بخور'] = $this->model_api_categories->getallcategries(2);
+
+		$this->response([
+				'status' 	=> true,
+				'message' 	=> 'Detail Categories',
+				'data'	 	=> $data
+			], API::HTTP_OK);
+
+	}
+
+
+	
+	
+
 	/**
 	 * @api {post} /categories/add Add Categories.
 	 * @apiVersion 0.1.0

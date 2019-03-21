@@ -86,6 +86,12 @@ class Model_api_shopping_cart extends MY_Model {
 		return $query->result();
 	}
 
+
+	public function getallcardd($cust_id)
+	{
+		
+	}
+
 }
 
 /* End of file Model_shopping_cart.php */

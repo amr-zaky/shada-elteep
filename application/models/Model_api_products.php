@@ -81,6 +81,7 @@ class Model_api_products extends MY_Model {
 		}
         $this->db->limit($limit, $offset);
         $this->db->order_by($this->primary_key, "DESC");
+        $this->db->where('status',1);
 		$query = $this->db->get($this->table_name);
 
 		return $query->result();

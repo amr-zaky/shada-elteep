@@ -86,6 +86,17 @@ class Model_api_favorites extends MY_Model {
 		return $query->result();
 	}
 
+	public function getallfavorites($id)
+	{
+		$this->db->select('products.*');
+		$this->db->from('favorites');
+		$this->db->where('favorites.cust_id',$id);
+		$this->db->join('products','products.product_id=favorites.pro_id');
+		$query=$this->db->get();
+		$data=$query->result();
+		return $data;	
+	}
+
 }
 
 /* End of file Model_favorites.php */
