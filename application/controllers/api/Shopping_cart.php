@@ -133,7 +133,65 @@ class Shopping_cart extends API
 		}
 	}
 
-	
+	public function calculateprice_get()
+	{
+		$this->is_allowed('api_shopping_cart_detail');
+
+		$this->requiredInput(['cust_id']);
+
+		$id =$this->get('cust_id');
+
+		$data['shopping_cart'] = $this->model_api_shopping_cart->getProductPrice($id);
+
+		$totalPrice=0;
+		foreach ($data['shopping_cart'] as $product)
+		{
+			
+			if(@$product->pro_id)
+			{
+				$totalPrice=$totalPrice+($product->product_price_offer * $product->amount);
+			}
+			else 
+			{
+				$totalPrice=$totalPrice+($product->product_price * $product->amount);
+			}
+			
+		}
+
+		$data['shipping_details'] = $this->model_api_shopping_cart->getShippingDetail();
+
+		$Shipping_price=$data['shipping_details'][0]->shipping_price;
+
+		$Shipping_taxes=$data['shipping_details'][0]->taxes;
+
+			
+
+			$totalPrice=$totalPrice+$Shipping_price;
+			$texesPresentage=$totalPrice*($Shipping_taxes/100);
+			$totalPrice=$totalPrice +$texesPresentage;
+			
+
+			
+			$price['price_detail'][]=[
+				'total_price'=>$totalPrice,
+				'Shipping_price'=>$Shipping_price,
+				'Shipping_taxes'=>$Shipping_taxes
+			];
+		if ($data['shopping_cart']) {
+			
+			$this->response([
+				'status' 	=> true,
+				'message' 	=> 'Total Price',	
+				'data'=> $price
+			], API::HTTP_OK);
+		} else {
+			$this->response([
+				'status' 	=> true,
+				'message' 	=> 'Shopping cart not found'
+			], API::HTTP_NOT_ACCEPTABLE);
+		}
+
+	}	
 	/**
 	 * @api {post} /shopping_cart/add Add Shopping cart.
 	 * @apiVersion 0.1.0

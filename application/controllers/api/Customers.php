@@ -321,7 +321,7 @@ public function login_post()
 		$this->form_validation->set_rules('last_name', 'Last Name', 'trim|required|max_length[100]');
 		$this->form_validation->set_rules('phone', 'Phone', 'trim|required|max_length[100]');
 		$this->form_validation->set_rules('email', 'Email', 'trim|required');
-		$this->form_validation->set_rules('password', 'Password', 'trim|required');
+		
 		
 		if ($this->form_validation->run()) {
 
@@ -330,7 +330,7 @@ public function login_post()
 				'last_name' => $this->input->post('last_name'),
 				'phone' => $this->input->post('phone'),
 				'email' => $this->input->post('email'),
-				'password' => $this->input->post('password'),
+				
 				'wallet_credit' => $this->input->post('wallet_credit'),
 				'verfication_code' => $this->input->post('verfication_code'),
 				'is_verified' => $this->input->post('is_verified'),

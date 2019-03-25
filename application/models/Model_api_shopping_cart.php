@@ -89,8 +89,46 @@ class Model_api_shopping_cart extends MY_Model {
 
 	public function getallcardd($cust_id)
 	{
-		
+		$this->db->select('products.*,favorites.pro_id as is_favorites');
+		$this->db->from('shopping_cart');
+		$this->db->where('shopping_cart.cust_id',$cust_id);
+		$this->db->join('favorites','favorites.pro_id=shopping_cart.pro_id','left');
+
+
+		$this->db->join('products','products.product_id=shopping_cart.pro_id');
+		$query=$this->db->get();
+		$data=$query->result();
+		return $data;
 	}
+
+
+	
+	public function getProductPrice($cust_id)
+	{	
+		$this->db->select('products.*,offers.pro_id,shopping_cart.cart_count as amount');
+		$this->db->from('shopping_cart');
+
+		$this->db->join('offers','offers.pro_id =shopping_cart.pro_id','left');
+		$this->db->join('products','products.product_id =shopping_cart.pro_id');
+		$this->db->where('shopping_cart.cust_id',$cust_id);
+		
+
+		$query=$this->db->get();
+		$data=$query->result();
+		return $data;
+	}
+
+
+
+	public function getShippingDetail()
+	{
+		$this->db->select('*');
+		$this->db->from('shipping_details');
+		$query=$this->db->get();
+		$data=$query->result();
+		return $data;
+	}
+	
 
 }
 
