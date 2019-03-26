@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Model_api_customers extends MY_Model {
+class Model_api_contact_us extends MY_Model {
 
-	private $primary_key 	= 'customer_id';
-	private $table_name 	= 'customers';
-	private $field_search 	= ['customer_id', 'first_name', 'last_name', 'phone', 'email', 'password', 'image', 'wallet_credit', 'verfication_code', 'is_verified', 'is_active'];
+	private $primary_key 	= 'id';
+	private $table_name 	= 'contact_us';
+	private $field_search 	= ['id'];
 
 	public function __construct()
 	{
@@ -86,36 +86,7 @@ class Model_api_customers extends MY_Model {
 		return $query->result();
 	}
 
-
-	public function checkpassword($id,$oldpassword)
-	{
-		$this->db->select('*');
-		$this->db->from('customers');
-		$this->db->where('customer_id',$id);
-		$this->db->where('password',$oldpassword);
-		$query=$this->db->get();
-		$data=$query->result();
-		
-		return $data;
-
-	}
-
-
-	public function checkmail($email)
-	    {
-	    $this->db->select('*');
-		$this->db->from('customers');
-		$this->db->where('email',$email);
-		$query=$this->db->get();
-		$data=$query->result();
-		
-		return $data;
-	        
-	        
-	    }
-	
-
 }
 
-/* End of file Model_customers.php */
-/* Location: ./application/models/Model_customers.php */
+/* End of file Model_contact_us.php */
+/* Location: ./application/models/Model_contact_us.php */

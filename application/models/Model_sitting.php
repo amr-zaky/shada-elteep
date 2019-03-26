@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Model_api_customers extends MY_Model {
+class Model_sitting extends MY_Model {
 
-	private $primary_key 	= 'customer_id';
-	private $table_name 	= 'customers';
-	private $field_search 	= ['customer_id', 'first_name', 'last_name', 'phone', 'email', 'password', 'image', 'wallet_credit', 'verfication_code', 'is_verified', 'is_active'];
+	private $primary_key 	= 'id';
+	private $table_name 	= 'sitting';
+	private $field_search 	= ['page_name', 'content'];
 
 	public function __construct()
 	{
@@ -29,18 +29,19 @@ class Model_api_customers extends MY_Model {
         if (empty($field)) {
 	        foreach ($this->field_search as $field) {
 	            if ($iterasi == 1) {
-	                $where .= $field . " LIKE '%" . $q . "%' ";
+	                $where .= "sitting.".$field . " LIKE '%" . $q . "%' ";
 	            } else {
-	                $where .= "OR " . $field . " LIKE '%" . $q . "%' ";
+	                $where .= "OR " . "sitting.".$field . " LIKE '%" . $q . "%' ";
 	            }
 	            $iterasi++;
 	        }
 
 	        $where = '('.$where.')';
         } else {
-        	$where .= "(" . $field . " LIKE '%" . $q . "%' )";
+        	$where .= "(" . "sitting.".$field . " LIKE '%" . $q . "%' )";
         }
 
+		$this->join_avaiable()->filter_avaiable();
         $this->db->where($where);
 		$query = $this->db->get($this->table_name);
 
@@ -58,64 +59,42 @@ class Model_api_customers extends MY_Model {
         if (empty($field)) {
 	        foreach ($this->field_search as $field) {
 	            if ($iterasi == 1) {
-	                $where .= $field . " LIKE '%" . $q . "%' ";
+	                $where .= "sitting.".$field . " LIKE '%" . $q . "%' ";
 	            } else {
-	                $where .= "OR " . $field . " LIKE '%" . $q . "%' ";
+	                $where .= "OR " . "sitting.".$field . " LIKE '%" . $q . "%' ";
 	            }
 	            $iterasi++;
 	        }
 
 	        $where = '('.$where.')';
         } else {
-        	if (in_array($field, $select_field)) {
-        		$where .= "(" . $field . " LIKE '%" . $q . "%' )";
-        	}
+        	$where .= "(" . "sitting.".$field . " LIKE '%" . $q . "%' )";
         }
 
         if (is_array($select_field) AND count($select_field)) {
         	$this->db->select($select_field);
         }
 		
-		if ($where) {
-        	$this->db->where($where);
-		}
+		$this->join_avaiable()->filter_avaiable();
+        $this->db->where($where);
         $this->db->limit($limit, $offset);
-        $this->db->order_by($this->primary_key, "DESC");
+        $this->db->order_by('sitting.'.$this->primary_key, "DESC");
 		$query = $this->db->get($this->table_name);
 
 		return $query->result();
 	}
 
+    public function join_avaiable() {
+        
+        return $this;
+    }
 
-	public function checkpassword($id,$oldpassword)
-	{
-		$this->db->select('*');
-		$this->db->from('customers');
-		$this->db->where('customer_id',$id);
-		$this->db->where('password',$oldpassword);
-		$query=$this->db->get();
-		$data=$query->result();
-		
-		return $data;
-
-	}
-
-
-	public function checkmail($email)
-	    {
-	    $this->db->select('*');
-		$this->db->from('customers');
-		$this->db->where('email',$email);
-		$query=$this->db->get();
-		$data=$query->result();
-		
-		return $data;
-	        
-	        
-	    }
-	
+    public function filter_avaiable() {
+        
+        return $this;
+    }
 
 }
 
-/* End of file Model_customers.php */
-/* Location: ./application/models/Model_customers.php */
+/* End of file Model_sitting.php */
+/* Location: ./application/models/Model_sitting.php */

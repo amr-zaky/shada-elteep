@@ -229,8 +229,25 @@ public function login_post()
 		$this->form_validation->set_rules('email', 'Email', 'trim|required');
 		$this->form_validation->set_rules('password', 'Password', 'trim|required');
 		
-		if ($this->form_validation->run()) {
+		if ($this->form_validation->run()) 
+		{
 
+
+			 $customer=$this->model_api_customers->checkmail($this->input->post('email'));
+	    
+	    if(@$customer)
+	    {
+	        $this->response([
+					'status' 	=> false,
+					'message' 	=>'هذا البريد الالكترونى مسخدم '
+				], API::HTTP_NOT_ACCEPTABLE);
+	    }
+	    
+	    
+	   else {
+
+
+	   
 			$save_data = [
 				'first_name' => $this->input->post('first_name'),
 				'last_name' => $this->input->post('last_name'),
@@ -242,7 +259,7 @@ public function login_post()
 				'is_verified' =>0,
 				'is_active' =>0,
 			];
-			if (!is_dir(FCPATH . '/uploads/customers')) {
+			/*if (!is_dir(FCPATH . '/uploads/customers')) {
 				mkdir(FCPATH . '/uploads/customers');
 			}
 			
@@ -254,7 +271,7 @@ public function login_post()
 			if ($upload = $this->upload_file('image', $config)){
 				$upload_data = $this->upload->data();
 				$save_data['image'] = $upload['file_name'];
-			}
+			}*/
 
 			$save_customers = $this->model_api_customers->store($save_data);
 
@@ -270,6 +287,8 @@ public function login_post()
 					'message' 	=> cclang('data_not_change')
 				], API::HTTP_NOT_ACCEPTABLE);
 			}
+
+		}
 
 		} else {
 			$this->response([
@@ -331,12 +350,8 @@ public function login_post()
 				'phone' => $this->input->post('phone'),
 				'email' => $this->input->post('email'),
 				
-				'wallet_credit' => $this->input->post('wallet_credit'),
-				'verfication_code' => $this->input->post('verfication_code'),
-				'is_verified' => $this->input->post('is_verified'),
-				'is_active' => $this->input->post('is_active'),
 			];
-			if (!is_dir(FCPATH . '/uploads/customers')) {
+			/*if (!is_dir(FCPATH . '/uploads/customers')) {
 				mkdir(FCPATH . '/uploads/customers');
 			}
 			
@@ -348,7 +363,7 @@ public function login_post()
 			if ($upload = $this->upload_file('image', $config)){
 				$upload_data = $this->upload->data();
 				$save_data['image'] = $upload['file_name'];
-			}
+			}*/
 
 			$save_customers = $this->model_api_customers->change($this->post('customer_id'), $save_data);
 
@@ -432,6 +447,96 @@ public function login_post()
 			], API::HTTP_NOT_ACCEPTABLE);
 		}
 	}
+
+
+
+
+	public function editpassword_post()
+	{
+
+
+	   $this->is_allowed('api_customers_update');
+	
+		$id=$this->input->post('id');
+        $oldpassword=$this->input->post('oldpassword');
+        $newpassword=$this->input->post('newpassword');
+	   
+
+        $customers=$this->model_api_customers->checkpassword($id,$oldpassword);
+
+        if(@$customers)
+        {
+        	$save_data=[
+        		"password"=>$newpassword
+        	];
+        	$save_customers = $this->model_api_customers->change($id,$save_data);
+
+        	if ($save_customers) {
+				$this->response([
+					'status' 	=> true,
+					'message' 	=> 'Your data has been successfully updated into the database'
+				], API::HTTP_OK);
+
+			} else {
+				$this->response([
+					'status' 	=> false,
+					'message' 	=> cclang('data_not_change')
+				], API::HTTP_NOT_ACCEPTABLE);
+			}
+
+
+
+        }
+
+        else
+        {
+        		$this->response([
+					'status' 	=> false,
+					'message' 	=> cclang('password wrong')
+				], API::HTTP_NOT_ACCEPTABLE);
+        }
+
+	}
+
+
+
+	public function changePhoto_post()
+	{
+		$this->is_allowed('api_customers_update');
+
+		if (!is_dir(FCPATH . '/uploads/customers')) {
+				mkdir(FCPATH . '/uploads/customers');
+			}
+			
+			$config = [
+				'upload_path' 	=> './uploads/customers/',
+					'required' 		=> true
+			];
+			
+			if ($upload = $this->upload_file('image', $config)){
+				$upload_data = $this->upload->data();
+				$save_data['image'] = $upload['file_name'];
+			}
+
+			$save_customers = $this->model_api_customers->change($this->post('id'), $save_data);
+
+			if ($save_customers) {
+				$this->response([
+					'status' 	=> true,
+					'message' 	=> 'Your data has been successfully updated into the database'
+				], API::HTTP_OK);
+
+			} else {
+				$this->response([
+					'status' 	=> false,
+					'message' 	=> cclang('data_not_change')
+				], API::HTTP_NOT_ACCEPTABLE);
+			}
+
+		} 
+
+	
+
 
 }
 
